@@ -1,0 +1,44 @@
+#!/bin/bash
+
+pkgname=gnome-hearts
+pkgdesc="Gnome Hearts card game rescued."
+
+url="https://github.com/manuel-192/m-m/raw/master/PKGBUILDs/$pkgname"
+
+pkgver=1.1
+pkgrel=2
+arch=(any)
+license=(GPL)
+depends=( #gtk-engine-murrine   # Is this gtk2 stuff really needed?
+         libglade)
+
+source=($url/$pkgname.zstd)
+sha512sums=('675768b039e2e68c824477b25b8f5d2357cc772a37297f46f350dea6cc825481d1801d36fdcb96114811f320151dc19171cf9371624017a1af26c56d081c0f5c')
+
+package() {
+    local xx
+    install -d $pkgdir/usr/bin
+    install -d $pkgdir/usr/share/applications
+    install -d $pkgdir/usr/share/$pkgname/players
+    install -d $pkgdir/usr/share/gnome/help/$pkgname/{C,de,en_GB,es,it,nl,pl,pt,tl,zh_CN}
+    install -d $pkgdir/usr/share/locale/{da,de,el,en_GB,es,eu,fi,fr,hu,id,it,ml,nl,pl,pt,ru,sk,sv,tl,zh_CN}/LC_MESSAGES
+    install -d $pkgdir/usr/share/man/man6
+    install -d $pkgdir/usr/share/omf/$pkgname
+    install -d $pkgdir/usr/share/pixmaps/$pkgname/cards
+
+    install -Dm755 usr/bin/$pkgname                                 $pkgdir/usr/bin/$pkgname
+    install -Dm644 usr/share/applications/$pkgname.desktop          $pkgdir/usr/share/applications/$pkgname.desktop
+    install -Dm644 usr/share/$pkgname/*.*                           $pkgdir/usr/share/$pkgname
+    install -Dm644 usr/share/$pkgname/players/*.py                  $pkgdir/usr/share/$pkgname/players
+    for xx in C de en_GB es it nl pl pt tl zh_CN ; do
+        install -Dm644 usr/share/gnome/help/$pkgname/$xx/*.xml      $pkgdir/usr/share/gnome/help/$pkgname/$xx
+    done
+    for xx in da de el en_GB es eu fi fr hu id it ml nl pl pt ru sk sv tl zh_CN ; do
+        install -Dm644 usr/share/locale/$xx/LC_MESSAGES/*.mo        $pkgdir/usr/share/locale/$xx/LC_MESSAGES
+    done
+    install -Dm644 usr/share/man/man6/$pkgname.6.gz                 $pkgdir/usr/share/man/man6/$pkgname.6.gz
+    install -Dm644 usr/share/omf/$pkgname/${pkgname}-*.omf          $pkgdir/usr/share/omf/$pkgname
+    install -Dm644 usr/share/pixmaps/$pkgname.png                   $pkgdir/usr/share/pixmaps/$pkgname.png
+    install -Dm644 usr/share/pixmaps/$pkgname/*.png                 $pkgdir/usr/share/pixmaps/$pkgname
+    install -Dm644 usr/share/pixmaps/$pkgname/cards/*.svg           $pkgdir/usr/share/pixmaps/$pkgname/cards
+}

@@ -1,0 +1,4 @@
+pre_install() {
+    local old=/usr/local/bin/wcd
+    test -x $old && rm -fv $old
+}

@@ -1,0 +1,62 @@
+#!/bin/bash
+# Maintainer: manuel (see forum.endeavouros.com)
+
+pkgname=wcd
+pkgdesc="Graphical cd (change directory), like Norton CD in the 1980's."
+pkgver=6.0.3
+pkgrel=3
+arch=('any')
+url="https://sourceforge.net/projects/$pkgname"
+license=('GPL')
+depends=('gcc' 'make' 'po4a')
+source=("$url/files/$pkgname/${pkgver}/${pkgname}-${pkgver}.tar.gz")
+sha512sums=('b48a6f8a196725b4b570701813cf8a96e13e4fd6289b6c779218acc20ea1ea841e5f8648f717bb389976b715b95856e91bad3ffb20f8d80961d75eae8eacfbe8')
+install=wcd.install
+
+_local_version_check()
+{
+  local ret=0
+  local tmp=$(mktemp)
+
+  wget -q --timeout=10 -O "$tmp" $url
+  if [ $? -eq 0 ] ; then
+    local newver=$(grep "Download ${pkgname}-" "$tmp" | sed 's|^.*Download '"$pkgname"'-\([0-9\.]*\)-.*$|\1|')
+
+    if [ "$newver" != "$pkgver" ] ; then
+        echo "Warning: $pkgname: PKGBUILD has outdated version ($pkgver -> $newver)." >&2
+        echo "See $url for a new version." >&2
+        ret=1
+    fi
+  else
+    echo "Error: could not check version info." >&2
+    ret=1
+  fi
+  rm -f "$tmp"
+  if [ $ret -ne 0 ] ; then
+    unset pkgver
+  fi
+}
+
+_local_version_check
+unset -f _local_version_check
+
+package() {
+  cd $srcdir
+  tar xvf ${pkgname}-${pkgver}.tar.gz
+
+  cd ${pkgname}-${pkgver}/src
+  make all
+  if [ $? -ne 0 ] ; then
+    echo "Error: $pkgname: making executable failed." >&2
+    return 1
+  fi
+  pushd man/man1
+  make || { echo "Error: $pkgname: man page generation failed." >&2 ; return 1 ; }
+  popd
+  #strip $pkgname.exe
+
+  cd $srcdir
+  # remove trailing .exe
+  install -vDm755 $srcdir/${pkgname}-${pkgver}/src/$pkgname.exe $pkgdir/usr/bin/$pkgname
+  install -vDm644 $srcdir/${pkgname}-${pkgver}/src/man/man1/$pkgname.1 $pkgdir/usr/local/man/man1/$pkgname.1
+}
