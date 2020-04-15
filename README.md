@@ -1,5 +1,8 @@
 # [m-more2]
 
+## Important news
+2020-04-15: See https://github.com/manuel-192/m-repo-info/blob/master/README.md
+
 ## Overview
 This repo includes 
 - a mirrorlist package for all Manuel's repositories
@@ -29,6 +32,3 @@ If you install that package, list of mirrors for m-more stay always up to date e
 
 ## Special note
 Any of the packages here may be removed if there are good reasons to do so.
-
-## Important news
-2020-04-15: See https://github.com/manuel-192/m-repo-info/blob/master/README.md
