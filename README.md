@@ -1,8 +1,7 @@
 # [m-more2]
 
 ## Important news
-2020-04-20: Moved package source of mirrorlist-m to repo [m-m].
-2020-04-15: See https://github.com/manuel-192/m-repo-info/blob/master/README.md
+Important news can always be found at https://github.com/manuel-192/m-repo-info.
 
 ## Overview
 This repo includes 
