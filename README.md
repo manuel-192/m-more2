@@ -5,8 +5,8 @@ Important news can always be found at https://github.com/manuel-192/m-repo-info/
 
 ## Overview
 This repo includes certain additional open source packages:
-  - gnome-hearts (a card game, rescued version only with no new features)
-  - wcd          (a graphical "cd" command)
+gnome-hearts | a card game, rescued version only with no new features
+wcd | a graphical "cd" command
 
 ## How to use this repo?
 Check these [instructions](../../../m-repo-info/blob/master/README.md)<br>
