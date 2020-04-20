@@ -4,8 +4,7 @@
 Important news can always be found at https://github.com/manuel-192/m-repo-info/blob/master/README.md.
 
 ## Overview
-This repo includes 
-- other packages
+This repo includes certain additional open source packages:
   - gnome-hearts (a card game, rescued version only with no new features)
   - wcd          (a graphical "cd" command)
 
