@@ -12,7 +12,7 @@ wcd | a graphical "cd" command
 
 ## How to use this repo?
 Check these [instructions](../../../m-repo-info/blob/master/README.md)<br>
-[List of packages](../../../m-more/releases) (same as the <b>Releases</b> button above).
+[List of packages](../../../m-more2/releases) (same as the <b>Releases</b> button above).
 
 ### Using a mirrorlist for this repo
 Repo **[m-mo]** includes a package named **mirrorlist-m** that can create a mirrorlist for all packages in Manuel's repos.
