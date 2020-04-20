@@ -1,12 +1,11 @@
 # [m-more2]
 
 ## Important news
+2020-04-20: Moved package source of mirrorlist-m to repo [m-m].
 2020-04-15: See https://github.com/manuel-192/m-repo-info/blob/master/README.md
 
 ## Overview
 This repo includes 
-- a mirrorlist package for all Manuel's repositories
-  - mirrolist-m
 - certain hand picked and pre-built [AUR](https://aur.archlinux.org/packages) packages like
   - bashdb
   - ccrypt
