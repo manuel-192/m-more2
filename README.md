@@ -1,7 +1,7 @@
 # [m-more2]
 
 ## Important news
-Important news can always be found at https://github.com/manuel-192/m-repo-info.
+Important news can always be found at https://github.com/manuel-192/m-repo-info/blob/master/README.md.
 
 ## Overview
 This repo includes 
