@@ -13,7 +13,7 @@ depends=( #gtk-engine-murrine   # Is this gtk2 stuff really needed?
          libglade)
 
 source=($url/$pkgname.zip)
-sha512sums=('e8b6af183d84b7b11acbe32e7a91db3b7b5700baec778f402200593550c971728a4584894d32a509e2fccb0dc997d0d05e7f978846d7cbfcafb821c6be4562e8')
+sha512sums=('658d3ba25449974777e6635e43633520329dc9fba3b76d5d26588833c2cbf7ef0b7cdf75889abf5e8cc8ef61f230180cb453af8041f6120866937cf68cbfe1d8')
 
 package() {
     local xx
