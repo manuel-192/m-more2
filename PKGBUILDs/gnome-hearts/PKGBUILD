@@ -5,15 +5,15 @@ pkgdesc="Gnome Hearts card game rescued."
 
 url="https://github.com/manuel-192/m-m/raw/master/PKGBUILDs/$pkgname"
 
-pkgver=1.1
-pkgrel=2
+pkgver=1.2
+pkgrel=1
 arch=(any)
 license=(GPL)
 depends=( #gtk-engine-murrine   # Is this gtk2 stuff really needed?
          libglade)
 
-source=($url/$pkgname.zstd)
-sha512sums=('675768b039e2e68c824477b25b8f5d2357cc772a37297f46f350dea6cc825481d1801d36fdcb96114811f320151dc19171cf9371624017a1af26c56d081c0f5c')
+source=($url/$pkgname.zip)
+sha512sums=('e8b6af183d84b7b11acbe32e7a91db3b7b5700baec778f402200593550c971728a4584894d32a509e2fccb0dc997d0d05e7f978846d7cbfcafb821c6be4562e8')
 
 package() {
     local xx
@@ -38,6 +38,7 @@ package() {
     done
     install -Dm644 usr/share/man/man6/$pkgname.6.gz                 $pkgdir/usr/share/man/man6/$pkgname.6.gz
     install -Dm644 usr/share/omf/$pkgname/${pkgname}-*.omf          $pkgdir/usr/share/omf/$pkgname
+    install -Dm644 usr/share/pixmaps/$pkgname.png                   $pkgdir/usr/share/icons/$pkgname.png
     install -Dm644 usr/share/pixmaps/$pkgname.png                   $pkgdir/usr/share/pixmaps/$pkgname.png
     install -Dm644 usr/share/pixmaps/$pkgname/*.png                 $pkgdir/usr/share/pixmaps/$pkgname
     install -Dm644 usr/share/pixmaps/$pkgname/cards/*.svg           $pkgdir/usr/share/pixmaps/$pkgname/cards
