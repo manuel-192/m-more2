@@ -8,7 +8,7 @@ Additional open source packages.
 Name | Description | Notes
 :--- | :---| :---
 gnome-hearts | a card game; a rescued version only with no new features
-wcd | a graphical "cd" command | NOTE: deprecated and to be removed before the end of this year!
+wcd | a graphical "cd" command | <b>Deprecated</b> and to be removed before the end of this year!
 
 ## Special note
 Any of the packages here may be removed if there are good reasons to do so.
