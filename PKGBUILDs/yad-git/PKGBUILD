@@ -7,11 +7,11 @@
 # Contributor: trile7 at gmail dot com
 # Contributor: Ernia <monghitri@aruba.it>
 
-# Yad with developer's Github fixes.
+# Yad with "some" fixes.
 
-pkgname=yad-git
-pkgver=7.1_git20200907_12_45_29
-pkgrel=0.1
+pkgname=yad-fixed
+pkgver=7.3
+pkgrel=1
 pkgdesc='A fork of zenity - display graphical dialogs from shell scripts or command line'
 url='https://github.com/v1cont/yad'
 arch=('x86_64')
@@ -22,6 +22,21 @@ source=( git+${url}.git )
 sha256sums=( SKIP )
 provides=(yad)
 conflicts=(yad yad-git)
+
+prepare() {
+    local patch=(
+        " if (options.data.width > 0) {\n"
+        "   gtk_widget_set_size_request (vbox, options.data.width, options.data.height);\n"
+        " } else {\n"
+        "   gint mw, nw;\n"
+        "   gtk_widget_get_preferred_width (vbox, &mw, &nw);\n"
+        "   gtk_widget_set_size_request (vbox, nw, -1);\n"
+        " }\n"
+    )
+    pwd
+    sed -i yad/src/main.c \
+        -e "/ parse geometry or move window, if given. must be after showing widget /i \ ${patch[*]}"
+}
 
 build() {
   cd yad
