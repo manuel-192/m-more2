@@ -33,7 +33,6 @@ prepare() {
         "   gtk_widget_set_size_request (vbox, nw, -1);\n"
         " }\n"
     )
-    pwd
     sed -i yad/src/main.c \
         -e "/ parse geometry or move window, if given. must be after showing widget /i \ ${patch[*]}"
 }
