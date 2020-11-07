@@ -7,8 +7,19 @@ DIE() {
     exit 1
 }
 
-Main() {
-    set -euo pipefail
+ShowChanges() {
+    local pkg="$1"
+    local current="$2"
+    local new="$3"     # optional
+
+    if [ -z "$new" ] ; then
+        printf2 "===> %-25s: OK (%s)\n" "$pkg" "$current"
+    else
+        printf2 "===> %-25s: %s --> %s\n" "$pkg" "$current" "$new"
+    fi
+}
+
+CheckChromeChanges() {
 
     # Check latest google-chrome-stable version
 
@@ -18,7 +29,7 @@ Main() {
     local Pkg="google-chrome-$ChromeChannel"
 
     # Get latest version
-    local LatestChrome=$(
+    LatestChrome=$(
         curl -sSf https://dl.google.com/linux/chrome/deb/dists/stable/main/binary-amd64/Packages |
             grep -A1 "^Package: google-chrome-$ChromeChannel" |
             grep ^Version: |
@@ -28,29 +39,56 @@ Main() {
 
     local CurrentChrome="$(grep "^_chrome_ver=" PKGBUILD | cut -d '=' -f2)"
 
-    [ "$LatestChrome" = "$CurrentChrome" ] && {
-        printf2 "===> Package ${Pkg} has most recent version ${LatestChrome}\n"
-        return
-    }
+    if [ "$LatestChrome" != "$CurrentChrome" ] ; then
+        ShowChanges "$Pkg" "$CurrentChrome" "$LatestChrome"
+        return 1
+    else
+        ShowChanges "$Pkg" "$CurrentChrome" ""
+        return 0
+    fi
+}
 
-    printf2 "$Pkg changed from $CurrentChrome to $LatestChrome.\n"
+Yes() {
+    local prompt="$1"
+    printf2 "\n"
+    read -p "$prompt (Y/n)? " >&2
+    case "$REPLY" in
+        ""|[Yy]*) return 0 ;;
+        *)        return 1 ;;
+    esac
+}
 
-    # Insert latest chrome version into PKGBUILD and update hashes
-    sed -i PKGBUILD \
-        -e "s/^_chrome_ver=.*/_chrome_ver=${LatestChrome}/" \
-        -e 's/pkgrel=.*/pkgrel=1/'
-
-    updpkgsums
-    makepkg -cf
-
-    printf2 "\n===> PKGBUILD updated. Please update with git.\n"
-
+Makepkg() {
     # Update .SRCINFO
     #makepkg --printsrcinfo >.SRCINFO
 
+    Yes "Build package" || return 1
+    makepkg -cf
+}
+
+Gitupdate() {
     # Commit changes
-    #git add PKGBUILD .SRCINFO
-    #git commit -m "${Pkg} v${LatestChrome}"
+    Yes "Commit to git version control" || return 1
+    git add PKGBUILD # .SRCINFO
+    git commit -m "${Pkg} v${LatestChrome}"
+}
+
+UpdatePkgbuild() {
+    Yes "Update PKGBUILD" || return 1
+    sed -i PKGBUILD \
+        -e "s/^_chrome_ver=.*/_chrome_ver=${LatestChrome}/" \
+        -e 's/^pkgrel=.*/pkgrel=1/'
+    updpkgsums
+}
+
+Main() {
+    set -euo pipefail
+    local LatestChrome=0
+    if (! CheckChromeChanges) ; then
+        if (UpdatePkgbuild) ; then
+            Makepkg && Gitupdate
+        fi
+    fi
 }
 
 Main "$@"
