@@ -39,7 +39,7 @@ CheckChromeChanges() {
         ShowChanges "$Pkg" "$CurrentChrome" "$LatestChrome"
         return 1
     else
-        ShowChanges "$Pkg" "$CurrentChrome" ""
+        #ShowChanges "$Pkg" "$CurrentChrome" ""
         return 0
     fi
 }
