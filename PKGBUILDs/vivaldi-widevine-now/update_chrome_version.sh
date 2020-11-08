@@ -4,7 +4,12 @@ printf2() { printf "$@" >&2 ; }
 
 DIE() {
     printf2 "Error: %s\n" "$1"
+    Execute usage
     exit 1
+}
+
+ShowAny() {
+    printf2 "===> %s\n" "$1"
 }
 
 ShowChanges() {
@@ -13,32 +18,23 @@ ShowChanges() {
     local new="$3"     # optional
 
     if [ -z "$new" ] ; then
-        printf2 "===> %-25s: OK (%s)\n" "$pkg" "$current"
+        ShowAny "$(printf "%-25s: OK (%s)" "$pkg" "$current")"
     else
-        printf2 "===> %-25s: %s --> %s\n" "$pkg" "$current" "$new"
+        ShowAny "$(printf "%-25s: %s --> %s" "$pkg" "$current" "$new")"
     fi
 }
 
+ChromeVersionCurrent() {
+    grep "^_chrome_ver=" PKGBUILD | cut -d '=' -f2
+}
+
+ChromeVersionLatest() {
+    local pkg="$1"
+    local url=https://dl.google.com/linux/chrome/deb/dists/$ChromeChannel/main/binary-amd64/Packages
+    curl -sSf $url | grep -A1 "^Package: $pkg" | grep ^Version: | awk '{print $2}' | cut -d '-' -f1
+}
+
 CheckChromeChanges() {
-
-    # Check latest google-chrome-stable version
-
-    # Get chrome channel
-    local ChromeChannel="$(awk -F '=' '/^_channel/{ print $2 }' PKGBUILD)"
-    [ -n "$ChromeChannel" ] || DIE "no '_channel' in PKGBUILD"
-    local Pkg="google-chrome-$ChromeChannel"
-
-    # Get latest version
-    LatestChrome=$(
-        curl -sSf https://dl.google.com/linux/chrome/deb/dists/stable/main/binary-amd64/Packages |
-            grep -A1 "^Package: $Pkg" |
-            grep ^Version: |
-            awk '{print $2}' | cut -d '-' -f1
-          )
-    [ -n "$LatestChrome" ] || DIE "latest $Pkg version unavailable!"
-
-    local CurrentChrome="$(grep "^_chrome_ver=" PKGBUILD | cut -d '=' -f2)"
-
     if [ "$LatestChrome" != "$CurrentChrome" ] ; then
         ShowChanges "$Pkg" "$CurrentChrome" "$LatestChrome"
         return 1
@@ -48,47 +44,48 @@ CheckChromeChanges() {
     fi
 }
 
-Yes() {
-    local prompt="$1"
-    printf2 "\n"
-    read -p "$prompt (Y/n)? " >&2
-    case "$REPLY" in
-        ""|[Yy]*) return 0 ;;
-        *)        return 1 ;;
-    esac
-}
-
 Makepkg() {
-    # Update .SRCINFO
-    #makepkg --printsrcinfo >.SRCINFO
-
-    Yes "Build package" || return 1
+    ShowAny "Building a package ..."
     makepkg -cf
 }
 
 Gitupdate() {
-    # Commit changes
-    Yes "Commit to git version control" || return 1
-    git add PKGBUILD # .SRCINFO
+    ShowAny "Update git ..."
+    git add PKGBUILD
     git commit -m "${Pkg} v${LatestChrome}"
 }
 
 UpdatePkgbuild() {
-    Yes "Update PKGBUILD" || return 1
+    ShowAny "Updating PKGBUILD ..."
     sed -i PKGBUILD \
         -e "s/^_chrome_ver=.*/_chrome_ver=${LatestChrome}/" \
         -e 's/^pkgrel=.*/pkgrel=1/'
     updpkgsums
 }
 
+Execute() {
+    case "$1" in
+        update)   CheckChromeChanges || UpdatePkgbuild ;;
+        build)    Makepkg ;;
+        git)      Gitupdate ;;
+        usage)    printf2 "Usage: $progname {update|build|git}\n" ;;
+        *) DIE "unsupported command '$1'" ;;
+    esac
+}
+
 Main() {
+    local op="$1"
+    local progname=$(basename "$0")
     set -euo pipefail
-    local LatestChrome=0
-    if (! CheckChromeChanges) ; then
-        if (UpdatePkgbuild) ; then
-            Makepkg && Gitupdate
-        fi
-    fi
+
+    local ChromeChannel="$(awk -F '=' '/^_channel/{ print $2 }' PKGBUILD)"
+    [ -n "$ChromeChannel" ] || DIE "no '_channel' in PKGBUILD"
+    local Pkg="google-chrome-$ChromeChannel"
+    local CurrentChrome="$(ChromeVersionCurrent)"
+    local LatestChrome="$(ChromeVersionLatest "$Pkg")"
+    [ -n "$LatestChrome" ] || DIE "latest $Pkg version unavailable!"
+
+    Execute "$op"
 }
 
 Main "$@"
