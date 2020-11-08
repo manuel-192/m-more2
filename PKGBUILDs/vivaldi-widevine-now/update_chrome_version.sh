@@ -30,8 +30,16 @@ ChromeVersionCurrent() {
 
 ChromeVersionLatest() {
     local pkg="$1"
-    local url=https://dl.google.com/linux/chrome/deb/dists/$ChromeChannel/main/binary-amd64/Packages
-    curl -sSf $url | grep -A1 "^Package: $pkg" | grep ^Version: | awk '{print $2}' | cut -d '-' -f1
+    echo "$PkgInfo" | grep -A1 "^Package: $pkg" | grep ^Version: | awk '{print $2}' | cut -d '-' -f1
+}
+
+Verify256sum() {
+    local ChromeSum="$(echo "$PkgInfo" | grep -A2 "^Filename: .*/google-chrome-$ChromeChannel" | grep "^SHA256:" | awk '{print $2}')"
+    local pkgsum=$(grep ^sha256sums= PKGBUILD | sed "s|^.*'\([^']*\)'.*|\1|")
+    if [ "$ChromeSum" != "$pkgsum" ] ; then
+        printf2 "ERROR: sha256 sums don't match!\n"
+        return 1
+    fi
 }
 
 CheckChromeChanges() {
@@ -39,7 +47,7 @@ CheckChromeChanges() {
         ShowChanges "$Pkg" "$CurrentChrome" "$LatestChrome"
         return 1
     else
-        #ShowChanges "$Pkg" "$CurrentChrome" ""
+        [ "$1" = "yes" ] && ShowChanges "$Pkg" "$CurrentChrome" ""
         return 0
     fi
 }
@@ -61,14 +69,17 @@ UpdatePkgbuild() {
         -e "s/^_chrome_ver=.*/_chrome_ver=${LatestChrome}/" \
         -e 's/^pkgrel=.*/pkgrel=1/'
     updpkgsums
+    Verify256sum
 }
 
 Execute() {
     case "$1" in
-        update)   CheckChromeChanges || UpdatePkgbuild ;;
+        updtest)  UpdatePkgbuild ;;
+        show)     CheckChromeChanges yes ;;
+        update)   CheckChromeChanges no || UpdatePkgbuild ;;
         build)    Makepkg ;;
         git)      Gitupdate ;;
-        usage)    printf2 "Usage: $progname {update|build|git}\n" ;;
+        usage)    printf2 "Usage: $progname {show|update|build|git}\n" ;;
         *) DIE "unsupported command '$1'" ;;
     esac
 }
@@ -82,6 +93,9 @@ Main() {
     [ -n "$ChromeChannel" ] || DIE "no '_channel' in PKGBUILD"
     local Pkg="google-chrome-$ChromeChannel"
     local CurrentChrome="$(ChromeVersionCurrent)"
+    local chromeurl=https://dl.google.com/linux/chrome/deb/dists/$ChromeChannel/main/binary-amd64/Packages
+    local PkgInfo="$(curl -sSf "$chromeurl")"
+    [ -n "$PkgInfo" ] || DIE "latest $Pkg info unavailable!"
     local LatestChrome="$(ChromeVersionLatest "$Pkg")"
     [ -n "$LatestChrome" ] || DIE "latest $Pkg version unavailable!"
 
