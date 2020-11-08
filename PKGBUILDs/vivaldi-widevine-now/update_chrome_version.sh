@@ -45,18 +45,18 @@ CheckChromeChanges() {
 }
 
 Makepkg() {
-    ShowAny "Building a package ..."
+    ShowAny "$Pkg: building package ..."
     makepkg -cf
 }
 
 Gitupdate() {
-    ShowAny "Update git ..."
+    ShowAny "$Pkg: update git ..."
     git add PKGBUILD
-    git commit -m "${Pkg} v${LatestChrome}"
+    git commit -m "."
 }
 
 UpdatePkgbuild() {
-    ShowAny "Updating PKGBUILD ..."
+    ShowAny "$Pkg: updating PKGBUILD ..."
     sed -i PKGBUILD \
         -e "s/^_chrome_ver=.*/_chrome_ver=${LatestChrome}/" \
         -e 's/^pkgrel=.*/pkgrel=1/'
