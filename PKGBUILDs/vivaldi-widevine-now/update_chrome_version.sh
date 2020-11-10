@@ -15,13 +15,8 @@ ShowAny() {
 ShowChanges() {
     local pkg="$1"
     local current="$2"
-    local new="$3"     # optional
-
-    if [ -z "$new" ] ; then
-        ShowAny "$(printf "%-25s: OK (%s)" "$pkg" "$current")"
-    else
-        ShowAny "$(printf "%-25s: %s --> %s" "$pkg" "$current" "$new")"
-    fi
+    local new="$3"
+    ShowAny "$(printf "%-20s: %s --> %s" "$pkg" "$current" "$new")"
 }
 
 ChromeVersionCurrent() {
@@ -42,33 +37,54 @@ Verify256sum() {
     fi
 }
 
+CheckWidevineChanges2() {
+    UpdatePkgbuild
+    source PKGBUILD
+    bsdtar -xf $_chrome_bin data.tar.xz
+    prepare
+    pkgver
+    rm -rf WidevineCdm
+    rm -f data.tar.xz $_chrome_bin
+}
+
+CheckWidevineChanges() {
+    local current=$(grep "^pkgver=" PKGBUILD | cut -d '=' -f 2)
+    local new=$(CheckWidevineChanges2)
+
+    if [ "$new" != "$current" ] ; then
+        sed -i PKGBUILD \
+            -e "s/^pkgver=.*/pkgver=${new}/"
+        ShowChanges "$Pkgname" "$current" "$new"
+    fi
+}
+
 CheckChromeChanges() {
     if [ "$LatestChrome" != "$CurrentChrome" ] ; then
-        ShowChanges "$Pkg" "$CurrentChrome" "$LatestChrome"
-        return 1
-    else
-        [ "$1" = "yes" ] && ShowChanges "$Pkg" "$CurrentChrome" ""
-        return 0
+        should_update_git=yes
+        [ "$1" = "yes" ] && ShowChanges "$ChromePkg" "$CurrentChrome" "$LatestChrome"
+        CheckWidevineChanges
     fi
 }
 
 Makepkg() {
-    ShowAny "$Pkg: building package ..."
+    ShowAny "$ChromePkg: building package ..."
     makepkg -cf
 }
 
 Gitupdate() {
-    ShowAny "$Pkg: update git ..."
-    git add PKGBUILD
-    git commit -m "."
+    if [ "$should_update_git" = "yes" ] ; then
+       ShowAny ": update git ..."
+       git add PKGBUILD
+       git commit -m "."
+    fi
 }
 
 UpdatePkgbuild() {
-    ShowAny "$Pkg: updating PKGBUILD ..."
+    #ShowAny "$ChromePkg: updating PKGBUILD ..."
     sed -i PKGBUILD \
         -e "s/^_chrome_ver=.*/_chrome_ver=${LatestChrome}/" \
         -e 's/^pkgrel=.*/pkgrel=1/'
-    updpkgsums
+    updpkgsums 2>/dev/null
     Verify256sum
 }
 
@@ -76,7 +92,7 @@ Execute() {
     case "$1" in
         updtest)  UpdatePkgbuild ;;
         show)     CheckChromeChanges yes ;;
-        update)   CheckChromeChanges no || UpdatePkgbuild ;;
+        update)   CheckChromeChanges no ;;
         build)    Makepkg ;;
         git)      Gitupdate ;;
         usage)    printf2 "Usage: $progname {show|update|build|git}\n" ;;
@@ -87,17 +103,19 @@ Execute() {
 Main() {
     local op="$1"
     local progname=$(basename "$0")
+    local Pkgname=vivaldi-widevine-now
+    local should_update_git=no
     set -euo pipefail
 
     local ChromeChannel="$(awk -F '=' '/^_channel/{ print $2 }' PKGBUILD)"
     [ -n "$ChromeChannel" ] || DIE "no '_channel' in PKGBUILD"
-    local Pkg="google-chrome-$ChromeChannel"
+    local ChromePkg="google-chrome-$ChromeChannel"
     local CurrentChrome="$(ChromeVersionCurrent)"
     local chromeurl=https://dl.google.com/linux/chrome/deb/dists/$ChromeChannel/main/binary-amd64/Packages
     local PkgInfo="$(curl -sSf "$chromeurl")"
-    [ -n "$PkgInfo" ] || DIE "latest $Pkg info unavailable!"
-    local LatestChrome="$(ChromeVersionLatest "$Pkg")"
-    [ -n "$LatestChrome" ] || DIE "latest $Pkg version unavailable!"
+    [ -n "$PkgInfo" ] || DIE "latest $ChromePkg info unavailable!"
+    local LatestChrome="$(ChromeVersionLatest "$ChromePkg")"
+    [ -n "$LatestChrome" ] || DIE "latest $ChromePkg version unavailable!"
 
     Execute "$op"
 }

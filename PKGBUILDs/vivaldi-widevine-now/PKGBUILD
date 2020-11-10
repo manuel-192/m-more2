@@ -4,7 +4,7 @@
 
 # Chrome info:
 _channel=stable
-_chrome_ver=86.0.4240.183
+_chrome_ver=86.0.4240.193
 _chrome_bin=google-chrome-${_channel}_${_chrome_ver}-1_amd64.deb
 
 pkgname=vivaldi-widevine-now
@@ -24,10 +24,10 @@ source=(
   "https://dl.google.com/linux/deb/pool/main/g/google-chrome-${_channel}/${_chrome_bin}"
   $_url/update_chrome_version.sh
 )
-sha256sums=('c9d37f91449ea3563d518b13164c5aefb42d166d5aec91f9832948d335ee0de4'
-            '26ab30625f271e1c098e82859227c63195576cde2e2a093c56db793b593c5f56')
-sha512sums=('9969c7206957821bb5a1cfc4db837f6127200ae1ed24b1242c1be9b3886cf7e0be612fb03f7d37d3fa02f9b74ccf94bac7bcaae06b38cd9cf7ae0ffbfc72ccf3'
-            '85b5dc302ff3cc95fa16d1445be7f0f0d003ceba55bb6cde4c530931c6928374c27a7906930c1b0641152476a62a58b48c12778f3ffd670d8d7b05d5a25dcd6f')
+sha256sums=('fc4a4717ddf9623eeb2ebd4cf0f3a845a20fab34bb2831af2a264507b6432ef4'
+            'd88e4e6ef446cf4fbd5f7ccab0b6d47b86a89634e0410fabb2174b13748c5866')
+sha512sums=('a1e33f91a67afd9b724f8d31840613a8754f8f8de33aa95e3c59c4797d47de3fb207b3e404d5abe4e9f81e7fd0503e39f616264a159fec82200e857e900120e0'
+            '81f9718b378f69df7ad2e38927c2e5cdf185863ac95a511dc986ca8679144879ae9cef86f7f83a97f98814f79d1b9c0cc7c6991f888eaee6c6967aa2fc63a344')
 
 prepare() {
   bsdtar -x --strip-components 4 -f data.tar.xz opt/google/chrome/WidevineCdm
