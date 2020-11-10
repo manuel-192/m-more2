@@ -25,9 +25,9 @@ source=(
   $_url/update_chrome_version.sh
 )
 sha256sums=('fc4a4717ddf9623eeb2ebd4cf0f3a845a20fab34bb2831af2a264507b6432ef4'
-            'd88e4e6ef446cf4fbd5f7ccab0b6d47b86a89634e0410fabb2174b13748c5866')
+            'c6d0a452f24cad8d2027381ca7c74436f2f402a1d39a69b25cff5a44a22d03d7')
 sha512sums=('a1e33f91a67afd9b724f8d31840613a8754f8f8de33aa95e3c59c4797d47de3fb207b3e404d5abe4e9f81e7fd0503e39f616264a159fec82200e857e900120e0'
-            '81f9718b378f69df7ad2e38927c2e5cdf185863ac95a511dc986ca8679144879ae9cef86f7f83a97f98814f79d1b9c0cc7c6991f888eaee6c6967aa2fc63a344')
+            'e74b2ae96c0032b1225382a4ab60fd8cdaa055d3845b53e7aa03704aa411fe99fe502cf900776b76c94de430b54c93a0655450d91775afe9d58a0f45780f06e1')
 
 prepare() {
   bsdtar -x --strip-components 4 -f data.tar.xz opt/google/chrome/WidevineCdm
