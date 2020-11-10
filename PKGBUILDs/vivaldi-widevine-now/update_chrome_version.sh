@@ -73,11 +73,11 @@ Makepkg() {
 
 _Gitupdate() {
     if [ "$should_update_git" = "yes" ] ; then
-        ShowAny "$Pkgname: updating git info ..."
-        git pull
-        git add PKGBUILD
-        git commit -m "."
-        ShowAny "$Pkgname: please run: git push"
+        ShowAny "$Pkgname: please update git!"
+        #git pull
+        #git add PKGBUILD
+        #git commit -m "."
+        #git push
     fi
 }
 
