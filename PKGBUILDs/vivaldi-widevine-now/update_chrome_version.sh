@@ -71,16 +71,17 @@ Makepkg() {
     makepkg -cf
 }
 
-Gitupdate() {
+_Gitupdate() {
     if [ "$should_update_git" = "yes" ] ; then
-       ShowAny ": update git ..."
-       git add PKGBUILD
-       git commit -m "."
+        ShowAny "$Pkgname: updating git info ..."
+        git pull
+        git add PKGBUILD
+        git commit -m "."
+        ShowAny "$Pkgname: please run: git push"
     fi
 }
 
 UpdatePkgbuild() {
-    #ShowAny "$ChromePkg: updating PKGBUILD ..."
     sed -i PKGBUILD \
         -e "s/^_chrome_ver=.*/_chrome_ver=${LatestChrome}/" \
         -e 's/^pkgrel=.*/pkgrel=1/'
@@ -92,7 +93,7 @@ Execute() {
     case "$1" in
         updtest)  UpdatePkgbuild ;;
         show)     CheckChromeChanges yes ;;
-        update)   CheckChromeChanges no ;;
+        update)   CheckChromeChanges no ; _Gitupdate ;;
         build)    Makepkg ;;
         git)      Gitupdate ;;
         usage)    printf2 "Usage: $progname {show|update|build|git}\n" ;;
