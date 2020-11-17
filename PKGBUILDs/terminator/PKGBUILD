@@ -1,0 +1,38 @@
+# Maintainer: Giancarlo Razzolini <grazzolini@archlinux.org>
+# Contributor: Guillaume ALAUX <guillaume@archlinux.org>
+# Contributor: Allan McRae <allan@archlinux.org>
+# Contributor: fancris3 <fancris3 at gmail.com>
+# Contributor: Daniel J Griffiths <ghost1227@archlinux.us>
+
+pkgname=terminator
+pkgver=2.0.1
+pkgrel=1
+pkgdesc='Terminal emulator that supports tabs and grids'
+arch=('any')
+url='https://github.com/gnome-terminator/terminator'
+license=('GPL2')
+provides=(terminator)
+conflicts=(terminator)
+depends=('gsettings-desktop-schemas' 'libkeybinder3' 'libnotify' 'python-cairo' 'python-configobj'
+         'python-dbus' 'python-psutil' 'python-gobject' 'vte3' 'xdg-utils'
+         )
+makedepends=('intltool' 'python-pip' 'python-wheel')
+#source=(${url}/releases/download/v${pkgver}/${pkgname}-${pkgver}.tar.gz{,.asc})
+source=(${url}/releases/download/v${pkgver}/${pkgname}-${pkgver}.tar.gz)
+
+#validpgpkeys=('6FBDB41587919A0F4BA96EBA9A358BAB04A4ED27') #Markus Frosch <markus@lazyfrosch.de>
+
+build() {
+    cd "${srcdir}/${pkgname}-${pkgver}"
+
+    python setup.py build
+}
+
+package() {
+    cd "${srcdir}/${pkgname}-${pkgver}"
+
+    python setup.py install --skip-build --root="${pkgdir}" --optimize=1
+
+    rm -f "${pkgdir}/usr/share/icons/hicolor/icon-theme.cache"
+}
+sha512sums=('bc8094944952bec96b6dc92ca25453fe19076daa23f0b672edc664e9ecdf83a58c5a2a161a26c1a44280a01601827cb728766ec9d20bc3d303072ae040ea2352')
