@@ -22,6 +22,16 @@ source=(${url}/releases/download/v${pkgver}/${pkgname}-${pkgver}.tar.gz)
 
 #validpgpkeys=('6FBDB41587919A0F4BA96EBA9A358BAB04A4ED27') #Markus Frosch <markus@lazyfrosch.de>
 
+prepare() {
+    # Stop if newer version is available.
+    local Url=https://github.com/gnome-terminator/terminator/releases
+    local newver=$(wget -q -O- $Url | grep /releases/tag/v | head -n 1 | sed -e 's|^.*/tag/v||' -e 's|".*$||')
+    if [ "$newver" != "$pkgver" ] ; then
+       echo "$pkgver --> $newver available!" >&2
+       return 1
+    fi
+}
+
 build() {
     cd "${srcdir}/${pkgname}-${pkgver}"
 
