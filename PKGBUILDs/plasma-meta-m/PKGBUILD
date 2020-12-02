@@ -40,26 +40,3 @@ depends=(
 )
 optdepends=('breeze-grub: Breeze theme for GRUB')
 conflicts=(plasma-meta)
-
-prepare() {
-    local tmpdir=$(mktemp -d)
-    local Pkgver Pkgrel
-    local has_new=no
-
-    pushd $tmpdir >/dev/null
-    yay -G plasma-meta >/dev/null || {
-        echo "$pkgname: error: yay failed" >&2
-        return 1
-    }
-    Pkgver=$(grep ^pkgver= plasma-meta/PKGBUILD | cut -d '=' -f 2)
-    Pkgrel=$(grep ^pkgrel= plasma-meta/PKGBUILD | cut -d '=' -f 2)
-    if [ "$Pkgver" != "$pkgver" ] || [ "$Pkgrel" != "$pkgrel" ] ; then
-        has_new=yes
-    fi
-    popd >/dev/null
-    rm -rf $tmpdir
-    if [ "$has_new" = "yes" ] ; then
-        echo "$pkgname: warning: new version ${Pkgver}-$Pkgrel is available" >&2
-        return 1
-    fi
-}
