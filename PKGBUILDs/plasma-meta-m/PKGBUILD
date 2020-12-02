@@ -1,0 +1,65 @@
+#!/bin/bash
+# Maintainer: Antonio Rojas <arojas@archlinux.org>
+# Contributor: Andrea Scarpino <andrea@archlinux.org>
+
+pkgname=plasma-meta-m
+pkgver=5.20
+pkgrel=1
+pkgdesc='Meta package to install KDE Plasma'
+arch=(any)
+url='https://www.archlinux.org/'
+depends=(
+    # bluedevil
+    breeze-gtk
+    # discover
+    drkonqi
+    kde-gtk-config
+    kdeplasma-addons
+    kgamma5
+    khotkeys
+    kinfocenter
+    kscreen
+    ksshaskpass
+    ksysguard
+    kwallet-pam
+    kwayland-integration
+    kwrited
+    oxygen
+    plasma-browser-integration
+    plasma-desktop
+    plasma-disks
+    plasma-nm
+    plasma-pa
+    plasma-sdk
+    plasma-thunderbolt
+    plasma-vault
+    plasma-workspace-wallpapers
+    powerdevil
+    sddm-kcm
+    xdg-desktop-portal-kde
+)
+optdepends=('breeze-grub: Breeze theme for GRUB')
+conflicts=(plasma-meta)
+
+prepare() {
+    local tmpdir=$(mktemp -d)
+    local Pkgver Pkgrel
+    local has_new=no
+
+    pushd $tmpdir >/dev/null
+    yay -G plasma-meta >/dev/null || {
+        echo "$pkgname: error: yay failed" >&2
+        return 1
+    }
+    Pkgver=$(grep ^pkgver= plasma-meta/PKGBUILD | cut -d '=' -f 2)
+    Pkgrel=$(grep ^pkgrel= plasma-meta/PKGBUILD | cut -d '=' -f 2)
+    if [ "$Pkgver" != "$pkgver" ] || [ "$Pkgrel" != "$pkgrel" ] ; then
+        has_new=yes
+    fi
+    popd >/dev/null
+    rm -rf $tmpdir
+    if [ "$has_new" = "yes" ] ; then
+        echo "$pkgname: warning: new version ${Pkgver}-$Pkgrel is available" >&2
+        return 1
+    fi
+}
