@@ -73,11 +73,13 @@ Makepkg() {
 
 _Gitupdate() {
     if [ "$should_update_git" = "yes" ] ; then
-        ShowAny "$Pkgname: please update git!"
-        #git pull
-        #git add PKGBUILD
-        #git commit -m "."
-        #git push
+        ShowAny "$Pkgname: updating git..."
+        if [ 1 -eq 1 ] ; then
+            git pull
+            git add PKGBUILD
+            git commit -m "."
+            git push
+        fi
     fi
 }
 
@@ -95,7 +97,7 @@ Execute() {
         show)     CheckChromeChanges yes ;;
         update)   CheckChromeChanges no ; _Gitupdate ;;
         build)    Makepkg ;;
-        git)      Gitupdate ;;
+        git)      _Gitupdate ;;
         usage)    printf2 "Usage: $progname {show|update|build|git}\n" ;;
         *) DIE "unsupported command '$1'" ;;
     esac
