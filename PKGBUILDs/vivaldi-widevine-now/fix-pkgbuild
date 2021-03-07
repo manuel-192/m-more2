@@ -1,14 +1,29 @@
 #!/bin/bash
 
+Error() {
+    echo "$progname: error: $1" >&2
+    return 1
+}
+
+Verify256sum() {
+    # check if sha256 sum from google is the same as calculated here
+    local chromesum="$(echo "$chromeinfo" | grep -A2 "^Filename: .*/google-chrome-$chromechannel" | grep "^SHA256:" | awk '{print $2}')"
+    local pkgsum=$(grep ^sha256sums= PKGBUILD | sed "s|^.*'\([^']*\)'.*|\1|")
+    if [ "$chromesum" != "$pkgsum" ] ; then
+        Error "sha256 sum mismatch between internet and PKGBUILD!"
+    fi
+}
+
 Main()
 {
+    local progname="$(basename "$0")"
     local chromechannel=$(grep "^_channel=" PKGBUILD | cut -d'=' -f2)
     local chromeurl=https://dl.google.com/linux/chrome/deb/dists/$chromechannel/main/binary-amd64/Packages
     local chromeinfo
     local chromeversion
     local errcode
 
-    chromeinfo="$(curl --silent --show-error --fail "$chromeurl")"
+    chromeinfo="$(curl --silent --show-error --fail "$chromeurl")"     # fetch info from google
     errcode=$?
     if [ $errcode -ne 0 ] ; then
         echo "Error: curl error code $errcode" >&2
@@ -24,6 +39,8 @@ Main()
     sed -i PKGBUILD -e "s|^_chrome_ver=.*|_chrome_ver=$chromeversion|"
     updpkgsums >& /dev/null
     #rm -f google-chrome-${chromechannel}*.deb
+
+    Verify256sum
 }
 
 Main "$@"
