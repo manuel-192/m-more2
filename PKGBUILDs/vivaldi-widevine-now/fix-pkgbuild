@@ -1,0 +1,29 @@
+#!/bin/bash
+
+Main()
+{
+    local chromechannel=$(grep "^_channel=" PKGBUILD | cut -d'=' -f2)
+    local chromeurl=https://dl.google.com/linux/chrome/deb/dists/$chromechannel/main/binary-amd64/Packages
+    local chromeinfo
+    local chromeversion
+    local errcode
+
+    chromeinfo="$(curl --silent --show-error --fail "$chromeurl")"
+    errcode=$?
+    if [ $errcode -ne 0 ] ; then
+        echo "Error: curl error code $errcode" >&2
+        return 1
+    fi
+
+    chromeversion=$(echo "$chromeinfo" | grep -A1 "^Package: google-chrome-$chromechannel" | grep ^Version: | awk '{print $2}' | cut -d '-' -f1)
+    if [ -z "$chromeversion" ] ; then
+        echo "Error: no chrome version available." >&2
+        return 1
+    fi
+
+    sed -i PKGBUILD -e "s|^_chrome_ver=.*|_chrome_ver=$chromeversion|"
+    updpkgsums >& /dev/null
+    #rm -f google-chrome-${chromechannel}*.deb
+}
+
+Main "$@"
