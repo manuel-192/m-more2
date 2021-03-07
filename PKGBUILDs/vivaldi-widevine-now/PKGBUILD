@@ -22,7 +22,7 @@ conflicts=('vivaldi-widevine' 'google-chrome')
 options=('!strip')
 source=(
   "https://dl.google.com/linux/deb/pool/main/g/google-chrome-${_channel}/${_chrome_bin}"
-  $_url/update_chrome_version.sh
+  $_url/fix-pkgbuild
 )
 sha256sums=('183089861c5c4c048b479f64b3baac2345bbd06736115210f4180d4c69fc1feb'
             '318bee612a3a4f78657ace37f817b9346f7cc9c91e8a8d353b3a3dba74bc9d3c')
