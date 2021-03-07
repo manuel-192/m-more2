@@ -1,5 +1,7 @@
 #!/bin/bash
 
+# Fix PKGBUILD's chrome version.
+
 Error() {
     echo "$progname: error: $1" >&2
     return 1
