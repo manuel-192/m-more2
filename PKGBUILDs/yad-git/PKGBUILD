@@ -9,9 +9,8 @@
 
 # Latest yad with fixes.
 
-_pkgname=yad
-pkgname=${_pkgname}-patched-git
-pkgver=9.0.git18e3112
+pkgname=yad-git
+pkgver=9.1.git33f526f
 pkgrel=1
 pkgdesc='A fork of zenity - display graphical dialogs from shell scripts or command line'
 url='https://github.com/v1cont/yad'
@@ -22,10 +21,10 @@ makedepends=('autoconf' 'automake' 'intltool')
 source=( git+${url}.git )
 sha256sums=( SKIP )
 provides=(yad)
-conflicts=(yad yad-git yad-eos)
+conflicts=(yad yad-git)
 
 pkgver() {
-  cd $_pkgname
+  cd yad
 
   if [ 0 -eq 1 ] ; then
       printf "r%s.%s" "$(git rev-list --count HEAD)" "$(git rev-parse --short HEAD)"
@@ -37,7 +36,7 @@ pkgver() {
 }
 
 prepare() {
-    local file=$_pkgname/src/main.c   # ${pkgname}-$pkgver/src/main.c
+    local file=yad/src/main.c
     local add_before_this_line="parse_geometry ();"         # line number 567 in version 9.0!
     local pp="gtk_widget_set_size_request (dlg, nw, -1);"   # check with this string if this patch already exists
     local patch=""
@@ -56,7 +55,7 @@ prepare() {
 }
 
 build() {
-  cd $_pkgname
+  cd yad
 
   autoreconf -ivf
   intltoolize
@@ -72,10 +71,10 @@ build() {
 }
 
 package() {
-  cd $_pkgname
+  cd yad
 
   make DESTDIR="${pkgdir}" install
 
   cd ../..
-  rm -rf $_pkgname
+  rm -rf yad
 }
