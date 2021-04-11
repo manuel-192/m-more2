@@ -1,0 +1,69 @@
+#!/bin/bash
+
+# Maintainer: Giancarlo Razzolini <grazzolini@archlinux.org>
+# Contributor: Anton Hvornum <anton@hvornum.se>
+# Contributor: demostanis worlds <demostanis@protonmail.com>
+
+
+pkgbase=archinstall
+pkgname=(archinstall-git python-archinstall-git)
+pkgver=0.1502
+pkgrel=1
+pkgdesc="Just another guided/automated Arch Linux installer with a twist"
+arch=('any')
+url="https://github.com/archlinux/$pkgbase"
+license=('GPL')
+depends=('python')
+makedepends=('python-pip' 'python-setuptools' 'python-sphinx')
+source=(git+$url.git)
+provides=($pkgbase)
+conflicts=($pkgbase)
+md5sums=(SKIP)
+sha512sums=(SKIP)
+validpgpkeys=('256F73CEEFC6705C6BBAB20E5FBBB32941E3740A') # Anton Hvornum (Torxed) <anton@hvornum.se>
+
+
+pkgver() {
+    local data=$(wget -q -O- --timeout=5 https://github.com/archlinux/archinstall)
+    if [ -z "$data" ] ; then
+        echo "$pkgbase: $FUNCNAME: error: fetching data failed." >&2
+        return 1
+    fi
+    local commits=$(echo "$data" | grep -B1 "Commits on master" | head -n1 | sed s'|.*<strong>\([0-9\,]*\)</.*|\1|' | tr -d ',')
+    echo "0.$commits"
+}
+
+build() {
+    cd "$pkgbase"
+
+    python setup.py build
+
+    cd docs
+    make man
+}
+
+
+package_archinstall-git() {
+    depends=(${pkgname[1]})
+    cd "$pkgbase"
+
+    mkdir -p "${pkgdir}/usr/bin"
+
+    # Install a guided profile
+    cat - > "${pkgdir}/usr/bin/archinstall" <<EOF
+#!/bin/sh
+python -m archinstall $@
+EOF
+
+    chmod +x "${pkgdir}/usr/bin/archinstall"
+
+    install -Dm644 docs/_build/man/archinstall.1 "${pkgdir}"/usr/share/man/man1/archinstall.1
+}
+
+package_python-archinstall-git() {
+    cd "$pkgbase"
+
+    python setup.py install --prefix=/usr --root="${pkgdir}" --optimize=1 --skip-build
+
+    rm -rf ../../$pkgbase
+}
