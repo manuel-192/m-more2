@@ -6,12 +6,12 @@ pkgdesc="Gnome Hearts card game rescued."
 url="https://github.com/manuel-192/m-m/raw/master/PKGBUILDs/$pkgname"
 
 pkgver=1.3
-pkgrel=1
+pkgrel=2
 arch=(any)
 license=(GPL)
 depends=(
     #gtk-engine-murrine   # Is this gtk2 stuff really needed?
-    libglade
+    #libglade
     python2
 )
 
