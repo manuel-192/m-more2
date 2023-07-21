@@ -2,7 +2,7 @@
 # Original Maintainer: Aitor Alonso <contact: https://aalonso.eu>
 
 pkgname=qogir-icon-theme-git
-pkgver=2020.06.22.r15.g607a90bd
+pkgver=2023.06.05.r11.g4e7b30c1
 pkgrel=1
 pkgdesc='A colorful design icon theme for linux desktops'
 arch=('any')
