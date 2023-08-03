@@ -2,7 +2,7 @@
 # Original Maintainer: Aitor Alonso <contact: https://aalonso.eu>
 
 pkgname=qogir-icon-theme-git
-pkgver=2023.06.05.r11.g4e7b30c1
+pkgver=2023.06.05.r12.g3454a633
 pkgrel=1
 pkgdesc='A colorful design icon theme for linux desktops'
 arch=('any')
@@ -11,8 +11,8 @@ license=('GPL3')
 depends=('hicolor-icon-theme' 'gtk-update-icon-cache')
 makedepends=('git')
 optdepends=()
-provides=('qogir-icon-theme')
-conflicts=('qogir-icon-theme')
+provides=('qogir-icon-theme' eos-qogir-icons)
+conflicts=('qogir-icon-theme' eos-qogir-icons)
 options=('!strip')
 source=('git+https://github.com/vinceliuice/Qogir-icon-theme')
 sha256sums=('SKIP')
