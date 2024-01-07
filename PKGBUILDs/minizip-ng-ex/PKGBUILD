@@ -1,0 +1,16 @@
+#!/bin/bash
+
+pkgname=minizip-ng-ex
+pkgver=1
+pkgrel=1
+url=https://github.com/manuel-192/m-more2/$pkgname
+pkgdesc="Meta package to help replacing minizip with minizip-ng"
+license=(GPL3)
+arch=(x86_64)
+depends=(minizip-ng)
+conflicts=(minizip)
+
+package() {
+    mkdir -p $pkgdir/usr/lib
+    ln -s libminizip-ng.so $pkgdir/usr/lib/libminizip.so
+}
