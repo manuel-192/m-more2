@@ -12,12 +12,12 @@
 
 pkgname=minizip-ex
 pkgver=0.1
-pkgrel=0.2
+pkgrel=0.3
 url=https://github.com/manuel-192/m-more2/raw/master/PKGBUILDs/$pkgname
 pkgdesc="Meta package to help replacing minizip with minizip-ng"
 license=(GPL3)
 arch=(x86_64)
 depends=(minizip)
-replaces=(minizip-ng-ex minizip-ng)
+replaces=(minizip-ng minizip-ng-ex)
 #provides=(minizip)
 #conflicts=(minizip-ng-ex minizip-ng)
