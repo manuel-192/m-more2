@@ -12,13 +12,14 @@
 
 pkgname=minizip-ng-ex
 pkgver=1
-pkgrel=1.1
+pkgrel=1.2
 url=https://github.com/manuel-192/m-more2/raw/master/PKGBUILDs/$pkgname
 pkgdesc="Meta package to help replacing minizip with minizip-ng"
 license=(GPL3)
 arch=(x86_64)
 depends=(minizip-ng)
 conflicts=(minizip)
+provides=(minizip)
 
 package() {
     mkdir -p $pkgdir/usr/lib
