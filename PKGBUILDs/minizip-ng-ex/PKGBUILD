@@ -1,0 +1,25 @@
+#!/bin/bash
+
+_change_pkg_minizip-ng() {
+    local pname=minizip-ng
+    local cwd="$PWD"
+
+    # Fetch the original pkg build stuff (if not yet available).
+    cd /tmp || return 1
+    if [ ! -d $pname ] ; then
+        yay -G $pname || return 1
+    fi
+
+    # Read all PKGBUILD info.
+    source $pname/PKGBUILD || return 1
+    cd "$cwd"
+
+    # Make some changes.
+    conflicts=(minizip)
+    provides=(minizip)
+    replaces=($pname)
+
+    # Cleanup.
+    rm -f ${pname}-$pkgver.tar.gz
+}
+_change_pkg_minizip-ng
