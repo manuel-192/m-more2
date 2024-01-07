@@ -1,0 +1,23 @@
+#!/bin/bash
+
+# Note that this package is experimental (=not well tested)!
+
+# To replace minizip with minizip-ng:
+# 1. sudo pacman -Rdd minizip
+# 2. sudo pacman -S minizip-ng-ex
+
+# To replace minizip-ng back to minizip:
+# 1. sudo pacman -Rsn minizip-ng-ex
+# 2. sudo pacman -S minizip
+
+pkgname=minizip-ex
+pkgver=0.1
+pkgrel=0.1
+url=https://github.com/manuel-192/m-more2/raw/master/PKGBUILDs/$pkgname
+pkgdesc="Meta package to help replacing minizip with minizip-ng"
+license=(GPL3)
+arch=(x86_64)
+depends=(minizip)
+#replaces=(minizip-ng-ex minizip-ng)
+#provides=(minizip)
+conflicts=(minizip-ng-ex minizip-ng)
