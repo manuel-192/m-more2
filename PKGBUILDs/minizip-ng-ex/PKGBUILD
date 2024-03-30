@@ -2,7 +2,7 @@
 
 pkgname=minizip-ng-ex
 pkgver=1
-pkgrel=1.5
+pkgrel=1.6
 url=https://github.com/manuel-192/m-more2/raw/master/PKGBUILDs/$pkgname
 pkgdesc="Meta package to help replacing minizip with minizip-ng (experimental!)"
 license=(GPL3)
