@@ -5,8 +5,8 @@
 pkgname=PhotoGIMP
 pkgdesc="A patch for GIMP3+ for Photoshopt users"
 url="https://github.com/Diolinux/PhotoGIMP"
-pkgver=3
-pkgrel=0
+pkgver=3.0
+pkgrel=1
 arch=(any)
 #license=(GPL)
 depends=()
