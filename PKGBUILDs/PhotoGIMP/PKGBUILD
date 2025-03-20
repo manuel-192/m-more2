@@ -12,7 +12,7 @@ arch=(any)
 depends=()
 
 source=(
-    $url/releases/download/${pkgver}.$pkgrel/${pkgname}-linux.zip
+    $url/releases/download/$pkgver/${pkgname}-linux.zip
 )
 sha256sums=('1af6e2a6308bbc0fb716a7dbbd68036adbcc091da16432869c7c6c6aef18e54e')
 
