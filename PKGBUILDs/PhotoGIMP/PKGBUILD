@@ -10,7 +10,7 @@ pkgname=PhotoGIMP
 pkgdesc="A patch for GIMP3+ for Photoshop users"
 url="https://github.com/Diolinux/PhotoGIMP"
 pkgver=3.0
-pkgrel=1
+pkgrel=2
 arch=(any)
 depends=()   # install gimp separately and run it once
 
