@@ -1,0 +1,6 @@
+#/bin/bash
+
+# Overwrite GIMP related stuff in ~/.local and ~/.config.
+
+/bin/cp -rv --update=all /etc/skel/PhotoGIMP-linux/.config/GIMP  $HOME/.config/
+/bin/cp -rv --update=all /etc/skel/PhotoGIMP-linux/.local/share  $HOME/.local/

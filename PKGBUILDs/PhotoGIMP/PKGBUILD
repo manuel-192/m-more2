@@ -2,31 +2,30 @@
 
 # Maintainer: manuel (see forum.endeavouros.com)
 
+# Installs PhotoGIMP into /etc/skel.
+# Adds an app /etc/skel/PhotoGIMP/install-to-user-home
+# which can copy PhotoGIMP additions into ~/.config/GIMP and ~/.local/share.
+
 pkgname=PhotoGIMP
-pkgdesc="A patch for GIMP3+ for Photoshopt users"
+pkgdesc="A patch for GIMP3+ for Photoshop users"
 url="https://github.com/Diolinux/PhotoGIMP"
 pkgver=3.0
 pkgrel=1
 arch=(any)
-#license=(GPL)
-depends=()
+depends=()   # install gimp separately and run it once
 
 source=(
     $url/releases/download/$pkgver/${pkgname}-linux.zip
+    install-to-user-home
 )
-sha256sums=('1af6e2a6308bbc0fb716a7dbbd68036adbcc091da16432869c7c6c6aef18e54e')
+sha256sums=('1af6e2a6308bbc0fb716a7dbbd68036adbcc091da16432869c7c6c6aef18e54e'
+            'dd0048d5356355772505cb5362fb1f4c1c6cacd4f9d702b91d4854bba40f7e3b')
 
 package() {
     install -d "$pkgdir/etc/skel"
     cp -a "${pkgname}-linux" "$pkgdir/etc/skel"
     rm -r $(find "$pkgdir/etc/skel" -name '.DS_Store')  # remove all files named '.DS_Store'
-    local tmpfile=$(mktemp)
-    cat <<EOF > $tmpfile
-#/bin/bash
-/bin/cp -rv --update=all "/etc/skel/${pkgname}-linux/.config" \$HOME
-/bin/cp -rv --update=all "/etc/skel/${pkgname}-linux/.local"  \$HOME
-EOF
-    install -Dm755 $tmpfile "$pkgdir/etc/skel/${pkgname}-linux/install-to-user-home"
-    rm -f $tmpfile
+
+    install -Dm755 install-to-user-home "$pkgdir/etc/skel/${pkgname}-linux/install-to-user-home"
     rm -f ../"${pkgname}-linux.zip"
 }
