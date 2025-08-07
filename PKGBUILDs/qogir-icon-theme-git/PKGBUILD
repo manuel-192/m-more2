@@ -1,9 +1,10 @@
 # Maintainer: manuel
 # Original Maintainer: Aitor Alonso <contact: https://aalonso.eu>
 
-pkgname=qogir-icon-theme-git
-pkgver=2023.06.05.r12.g3454a633
-pkgrel=2
+#pkgname=qogir-icon-theme-git
+pkgname=eos-qogir-icons
+pkgver=6.333  # see $srcver and $commits below!
+pkgrel=1
 pkgdesc='A colorful design icon theme for linux desktops'
 arch=('any')
 url='https://github.com/vinceliuice/Qogir-icon-theme'
@@ -19,7 +20,20 @@ sha256sums=('SKIP')
 
 pkgver() {
   cd Qogir-icon-theme
-  git describe --long --tags | sed 's/\([^-]*-g\)/r\1/;s/-/./g'
+  #local commits_head=$(git rev-list --count HEAD)
+  local commits_head=333
+
+  local srcver=6
+  local commits=333
+
+  if [ $commits_head -gt $commits ] ; then
+      if false ; then
+          : # commits=$commits_head
+      else
+          echo "Warning: $pkgname/commits $commits -> $commits_head" >&2
+      fi
+  fi
+  echo "$srcver.$commits"
 }
 
 package() {
