@@ -1,10 +1,10 @@
 # Maintainer: manuel
 # Original Maintainer: Aitor Alonso <contact: https://aalonso.eu>
 
-#pkgname=qogir-icon-theme-git
+# pkgname=qogir-icon-theme-git
 pkgname=eos-qogir-icons
-pkgver=6.333  # see $srcver and $commits below!
-pkgrel=1
+pkgver=6.1.333  # see $Pkgver and $Commits_wanted below!
+pkgrel=1.1
 pkgdesc='A colorful design icon theme for linux desktops'
 arch=('any')
 url='https://github.com/vinceliuice/Qogir-icon-theme'
@@ -20,20 +20,18 @@ sha256sums=('SKIP')
 
 pkgver() {
   cd Qogir-icon-theme
-  #local commits_head=$(git rev-list --count HEAD)
-  local commits_head=333
 
-  local srcver=6
-  local commits=333
+  local commits_new=$(git rev-list --count HEAD)
+  local Pkgver=6.1
+  local Commits_wanted=333    # this specifies what version we want to use
 
-  if [ $commits_head -gt $commits ] ; then
-      if false ; then
-          : # commits=$commits_head
-      else
-          echo "Warning: $pkgname/commits $commits -> $commits_head" >&2
-      fi
+  if [ $commits_new -gt $Commits_wanted ] ; then
+      echo "WARNING: $pkgname/commits $Commits_wanted -> $commits_new, building with $Commits_wanted" >&2
+  elif [ $commits_new -lt $Commits_wanted ] ; then
+      echo "ERROR: $pkgname/commits $Commits_wanted -> $commits_new, will not build" >&2
+      return 1
   fi
-  echo "$srcver.$commits"
+  echo "$Pkgver.$Commits_wanted"
 }
 
 package() {
